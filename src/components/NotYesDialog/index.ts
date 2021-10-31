@@ -1,3 +1,3 @@
-﻿import NotYesDialog from "./NotYesDialog";
+import NotYesDialog from "./NotYesDialog";
 
 export default NotYesDialog;
