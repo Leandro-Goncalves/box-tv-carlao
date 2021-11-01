@@ -19,6 +19,16 @@ export type User = {
   value: number;
 };
 
+const sortFunction = (a: User, b: User) => {
+  if (a.name.toLowerCase() < b.name.toLowerCase()) {
+    return -1;
+  }
+  if (a.name.toLowerCase() > b.name.toLowerCase()) {
+    return 1;
+  }
+  return 0;
+};
+
 const usersRef = collection(db, "users");
 const UserService = {
   getUsers(callback: (users: User[]) => void) {
@@ -27,7 +37,7 @@ const UserService = {
         id: doc.id,
         ...doc.data(),
       })) as User[];
-      callback(users);
+      callback(users.sort(sortFunction));
     });
   },
   async addUser(user: User) {
