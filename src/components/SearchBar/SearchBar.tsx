@@ -1,7 +1,7 @@
 import { Grow, IconButton, TextField, Tooltip } from "@material-ui/core";
 import { Close } from "@material-ui/icons";
-import { memo, useCallback, useEffect, useState } from "react";
-import _ from "lodash";
+import { memo, useCallback, useState } from "react";
+import { debounce } from "lodash";
 
 type SearchBarProps = {
   onSearch: (search: string) => void;
@@ -16,12 +16,13 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch, value }) => {
     onSearch("");
   };
 
-  const debounceFn = useCallback(
-    _.debounce((c) => {
+  const runDebounce = (c: string) => {
+    debounce(() => {
       onSearch(c);
-    }, 1000),
-    []
-  );
+    }, 1000);
+  };
+
+  const debounceFn = useCallback(runDebounce, [onSearch]);
 
   return (
     <TextField

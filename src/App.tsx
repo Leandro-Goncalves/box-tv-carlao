@@ -9,12 +9,8 @@ import {
   Button,
   Typography,
   Box,
-  TextField,
-  InputAdornment,
-  Tooltip,
-  Grow,
 } from "@material-ui/core";
-import { Add, Close, Create, Delete } from "@material-ui/icons";
+import { Add, Create, Delete } from "@material-ui/icons";
 import theme from "./theme/defaultTheme";
 import { editUser, getUsers, removeUser, User } from "./services/firebase/user";
 import styled from "styled-components";
