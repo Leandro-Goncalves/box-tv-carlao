@@ -9,8 +9,12 @@ import {
   Button,
   Typography,
   Box,
+  TextField,
+  InputAdornment,
+  Tooltip,
+  Grow,
 } from "@material-ui/core";
-import { Add, Create, Delete } from "@material-ui/icons";
+import { Add, Close, Create, Delete } from "@material-ui/icons";
 import theme from "./theme/defaultTheme";
 import { editUser, getUsers, removeUser, User } from "./services/firebase/user";
 import styled from "styled-components";
@@ -18,6 +22,7 @@ import AddUserDialog from "./components/AddUserDialog";
 import NotYesDialog from "./components/NotYesDialog";
 import { toast } from "react-toastify";
 import UserInformationDialog from "./components/UserInformationDialog";
+import SearchBar from "./components/SearchBar";
 
 const styles = {
   addUserButton: {
@@ -88,6 +93,8 @@ function App() {
     {} as User
   );
 
+  const [searchBar, setSearchBar] = useState("");
+
   const handleOpenAddUserDialog = () => {
     setOpenAddUserDialog(true);
   };
@@ -125,6 +132,11 @@ function App() {
     setOpenUserInformation({} as User);
   };
 
+  const filterFunction = (user: any) => {
+    const search = searchBar.toLowerCase();
+    return user.name.toLowerCase().includes(search);
+  };
+
   useEffect(() => {
     getUsers((userDb) => {
       setUsers(userDb);
@@ -158,14 +170,17 @@ function App() {
       >
         Box Tv
       </Typography>
-      <Button
-        onClick={handleOpenAddUserDialog}
-        variant="contained"
-        startIcon={<Add />}
-        style={styles.addUserButton}
-      >
-        adicionar usuario
-      </Button>
+      <Box style={{ display: "flex", gap: 8, alignItems: "center" }}>
+        <Button
+          onClick={handleOpenAddUserDialog}
+          variant="contained"
+          startIcon={<Add />}
+          style={styles.addUserButton}
+        >
+          adicionar usuario
+        </Button>
+        <SearchBar value={searchBar} onSearch={(v) => setSearchBar(v)} />
+      </Box>
       <Table sx={{ minWidth: 650 }}>
         <TableHead>
           <TableRow>
@@ -180,7 +195,7 @@ function App() {
           </TableRow>
         </TableHead>
         <TableBody>
-          {users.map((user, index) => (
+          {users.filter(filterFunction).map((user, index) => (
             <TableRow>
               <TableCell align="left" style={{ maxWidth: 30 }}>
                 {index + 1}
