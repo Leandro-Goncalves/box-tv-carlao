@@ -33,7 +33,6 @@ const AddUserDialog: React.FC<AddUserDialogProps> = ({
   const [value, setValue] = useState(0);
   const [informations, setInformations] = useState("");
   const [isRented, setIsRented] = useState(false);
-  const [months, setMonths] = useState<Array<string>>([]);
 
   const handleClose = () => {
     setName("");
@@ -41,7 +40,6 @@ const AddUserDialog: React.FC<AddUserDialogProps> = ({
     setInformations("");
     setIsRented(false);
     setId("");
-    setMonths([]);
     onClose();
   };
 
@@ -51,7 +49,7 @@ const AddUserDialog: React.FC<AddUserDialogProps> = ({
         name,
         value,
         isRented,
-        months,
+        years: [],
         info: informations,
       }).then(() => {
         toast.success("Usuário editado");
@@ -60,20 +58,17 @@ const AddUserDialog: React.FC<AddUserDialogProps> = ({
       return;
     }
     const date = new Date();
-
     const thisMonth = date.getMonth();
     const thisDay = date.getDate();
     const _months = [];
-
     for (let i = 0; i < 12; i++) {
-      _months.push(thisMonth >= i ? String(thisDay) : "");
+      _months.push(thisMonth >= i ? { value: String(thisDay) } : { value: "" });
     }
-
     const user: User = {
       name,
       value,
       isRented,
-      months: _months,
+      years: [{ id: 2021, months: _months }],
       info: informations,
     };
     addUser(user).then(() => {
@@ -84,7 +79,7 @@ const AddUserDialog: React.FC<AddUserDialogProps> = ({
 
   useEffect(() => {
     if (initialData?.id) {
-      setMonths(initialData.months);
+      console.log("initialData");
       setId(initialData.id);
       setName(initialData.name);
       setValue(initialData.value);

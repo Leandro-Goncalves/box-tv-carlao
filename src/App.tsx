@@ -12,7 +12,13 @@ import {
 } from "@material-ui/core";
 import { Add, Create, Delete } from "@material-ui/icons";
 import theme from "./theme/defaultTheme";
-import { editUser, getUsers, removeUser, User } from "./services/firebase/user";
+import {
+  currentYearIndex,
+  editUser,
+  getUsers,
+  removeUser,
+  User,
+} from "./services/firebase/user";
 import styled from "styled-components";
 import AddUserDialog from "./components/AddUserDialog";
 import NotYesDialog from "./components/NotYesDialog";
@@ -26,6 +32,21 @@ const styles = {
     margin: 24,
   },
 };
+
+const monthsNull = [
+  { value: "" },
+  { value: "" },
+  { value: "" },
+  { value: "" },
+  { value: "" },
+  { value: "" },
+  { value: "" },
+  { value: "" },
+  { value: "" },
+  { value: "" },
+  { value: "" },
+  { value: "" },
+];
 
 const months = [
   "Jan",
@@ -114,14 +135,16 @@ function App() {
   const ToggleDay = (id: string, user: User, index: number) => {
     const date = new Date();
     const today = date.getDate();
+    const yearIndex = currentYearIndex(user.years);
 
-    const newUser: User = {
-      ...user,
-      months: user.months.map((v, i) =>
-        i === index ? (!!v ? "" : String(today)) : v
-      ),
-    };
-    editUser(id, newUser);
+    if (!yearIndex.months) {
+      return;
+    }
+
+    const month = yearIndex.months[index];
+    month.value = !!month.value ? "" : String(today);
+
+    editUser(id, user);
   };
 
   const handlecloseUserInformation = () => {
@@ -203,26 +226,28 @@ function App() {
               >
                 {user.name}
               </TableCellUser>
-              {user.months.map((month, index) => (
-                <TableCell style={{ padding: 5 }}>
-                  <TableMonths
-                    isPaid={!!month}
-                    key={index}
-                    onClick={() => ToggleDay(user.id ?? "", user, index)}
-                  >
-                    <Typography
-                      style={{
-                        fontSize: 20,
-                        textAlign: "center",
-                        fontWeight: 600,
-                        color: "#FFF",
-                      }}
+              {(currentYearIndex(user.years).months ?? monthsNull).map(
+                (month, index) => (
+                  <TableCell style={{ padding: 5 }}>
+                    <TableMonths
+                      isPaid={!!month.value}
+                      key={index}
+                      onClick={() => ToggleDay(user.id ?? "", user, index)}
                     >
-                      {month}
-                    </Typography>
-                  </TableMonths>
-                </TableCell>
-              ))}
+                      <Typography
+                        style={{
+                          fontSize: 20,
+                          textAlign: "center",
+                          fontWeight: 600,
+                          color: "#FFF",
+                        }}
+                      >
+                        {month.value}
+                      </Typography>
+                    </TableMonths>
+                  </TableCell>
+                )
+              )}
               <TableCell
                 align="right"
                 style={{

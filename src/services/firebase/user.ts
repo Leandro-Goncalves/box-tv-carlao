@@ -10,13 +10,26 @@ import {
   orderBy,
 } from "firebase/firestore";
 
+type Months = {
+  value: string;
+};
+
 export type User = {
   id?: string;
   name: string;
-  months: Array<string>;
+  years: Array<{ id: number; months: Months[] }>;
   isRented: boolean;
   info: string;
   value: number;
+};
+
+export const currentYear = Number(localStorage.getItem("currentYear")) || 2021;
+
+export const currentYearIndex = (
+  years: Array<{ id: number; months: Months[] }>
+): { id?: number; months?: Months[] } => {
+  const yearsIndex = years.find((y) => y.id === currentYear);
+  return yearsIndex || {};
 };
 
 const sortFunction = (a: User, b: User) => {
