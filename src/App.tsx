@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   Table,
   TableHead,
@@ -25,6 +25,8 @@ import NotYesDialog from "./components/NotYesDialog";
 import { toast } from "react-toastify";
 import UserInformationDialog from "./components/UserInformationDialog";
 import SearchBar from "./components/SearchBar";
+import useLongPress from "./hooks/useLongPress";
+import UserAddDayDialog from "./components/UserAddDayDialog";
 
 const styles = {
   addUserButton: {
@@ -100,9 +102,13 @@ const TableCellUser = styled(TableCell)<TableCellUserProps>`
 `;
 
 function App() {
+  const HeaderRef = useRef(null);
   const [users, setUsers] = useState<User[]>([]);
   const [openAddUserDialog, setOpenAddUserDialog] = useState(false);
   const [removeDialog, setRemoveDialog] = useState("");
+  const [openUserAddDayDialog, setOpenUserAddDayDialog] = useState(false);
+  const [openUserAddDayDialogValue, setOpenUserAddDayDialogValue] =
+    useState<any>();
 
   const [initialData, setInitialData] = useState<User>({} as User);
 
@@ -162,8 +168,35 @@ function App() {
     });
   }, []);
 
+  const onLongPress = (e: any, value: any) => {
+    setOpenUserAddDayDialogValue(value);
+    setOpenUserAddDayDialog(true);
+  };
+
+  const onClick = () => {};
+
+  const defaultOptions = {
+    shouldPreventDefault: true,
+    delay: 500,
+  };
+
+  const longPressEvent = useLongPress({
+    onLongPress,
+    onClick,
+    shouldPreventDefault: defaultOptions.shouldPreventDefault,
+    delay: defaultOptions.delay,
+  });
+
   return (
     <>
+      {openUserAddDayDialog && (
+        <UserAddDayDialog
+          isOpen={openUserAddDayDialog}
+          onClose={() => setOpenUserAddDayDialog(false)}
+          value={openUserAddDayDialogValue}
+        />
+      )}
+
       <NotYesDialog
         title="Remover usuário"
         open={!!removeDialog}
@@ -200,7 +233,7 @@ function App() {
         </Button>
         <SearchBar value={searchBar} onSearch={(v) => setSearchBar(v)} />
       </Box>
-      <Table sx={{ minWidth: 650 }}>
+      <Table sx={{ minWidth: 650 }} ref={HeaderRef}>
         <TableHead>
           <TableRow>
             <TableCell align="left">id</TableCell>
@@ -233,6 +266,13 @@ function App() {
                       isPaid={!!month.value}
                       key={index}
                       onClick={() => ToggleDay(user.id ?? "", user, index)}
+                      {...longPressEvent}
+                      onMouseDown={(e: any) =>
+                        longPressEvent.onMouseDown(e, { user, index })
+                      }
+                      onTouchStart={(e: any) =>
+                        longPressEvent.onTouchStart(e, { user, index })
+                      }
                     >
                       <Typography
                         style={{
