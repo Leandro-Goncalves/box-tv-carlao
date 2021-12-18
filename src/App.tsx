@@ -27,6 +27,7 @@ import UserInformationDialog from "./components/UserInformationDialog";
 import SearchBar from "./components/SearchBar";
 import useLongPress from "./hooks/useLongPress";
 import UserAddDayDialog from "./components/UserAddDayDialog";
+import { ArrowForward, ArrowBack } from "@material-ui/icons";
 
 const styles = {
   addUserButton: {
@@ -107,6 +108,9 @@ function App() {
   const [openAddUserDialog, setOpenAddUserDialog] = useState(false);
   const [removeDialog, setRemoveDialog] = useState("");
   const [openUserAddDayDialog, setOpenUserAddDayDialog] = useState(false);
+  const [currentYear, setCurrentYear] = useState(
+    Number(localStorage.getItem("currentYear")) || new Date().getFullYear()
+  );
   const [openUserAddDayDialogValue, setOpenUserAddDayDialogValue] =
     useState<any>();
 
@@ -141,7 +145,7 @@ function App() {
   const ToggleDay = (id: string, user: User, index: number) => {
     const date = new Date();
     const today = date.getDate();
-    const yearIndex = currentYearIndex(user.years);
+    const yearIndex = currentYearIndex(user);
 
     if (!yearIndex.months) {
       return;
@@ -187,6 +191,10 @@ function App() {
     delay: defaultOptions.delay,
   });
 
+  const handleCurrentYear = (value: number) => {
+    setCurrentYear(value);
+    localStorage.setItem("currentYear", value.toString());
+  };
   return (
     <>
       {openUserAddDayDialog && (
@@ -222,6 +230,27 @@ function App() {
       >
         Box Tv
       </Typography>
+      <Box
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <IconButton onClick={() => handleCurrentYear(currentYear - 1)}>
+          <ArrowBack />
+        </IconButton>
+        <Typography
+          style={{
+            fontSize: 24,
+          }}
+        >
+          {currentYear}
+        </Typography>
+        <IconButton onClick={() => handleCurrentYear(currentYear + 1)}>
+          <ArrowForward />
+        </IconButton>
+      </Box>
       <Box style={{ display: "flex", gap: 8, alignItems: "center" }}>
         <Button
           onClick={handleOpenAddUserDialog}
@@ -259,7 +288,7 @@ function App() {
               >
                 {user.name}
               </TableCellUser>
-              {(currentYearIndex(user.years).months ?? monthsNull).map(
+              {(currentYearIndex(user).months ?? monthsNull).map(
                 (month, index) => (
                   <TableCell style={{ padding: 5 }}>
                     <TableMonths

@@ -57,7 +57,7 @@ const UserAddDayDialog = ({
       return;
     }
 
-    const yearIndex = currentYearIndex(user.years);
+    const yearIndex = currentYearIndex(user);
     if (!yearIndex.months) {
       onClose();
       return;

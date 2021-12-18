@@ -23,13 +23,44 @@ export type User = {
   value: number;
 };
 
-export const currentYear = Number(localStorage.getItem("currentYear")) || 2021;
+const createNewYear = (user: User): any => {
+  const newUser = { ...user };
+  const newYear = {
+    id: Number(localStorage.getItem("currentYear")) || new Date().getFullYear(),
+    months: [
+      { value: "" },
+      { value: "" },
+      { value: "" },
+      { value: "" },
+      { value: "" },
+      { value: "" },
+      { value: "" },
+      { value: "" },
+      { value: "" },
+      { value: "" },
+      { value: "" },
+      { value: "" },
+    ],
+  };
+  newUser.years.push(newYear);
+
+  editUser(newUser.id ?? "", newUser);
+  return newYear;
+};
 
 export const currentYearIndex = (
-  years: Array<{ id: number; months: Months[] }>
+  user: User
 ): { id?: number; months?: Months[] } => {
-  const yearsIndex = years.find((y) => y.id === currentYear);
-  return yearsIndex || {};
+  const years = user.years;
+  const yearsIndex = years.find(
+    (y) =>
+      y.id ===
+      (Number(localStorage.getItem("currentYear")) || new Date().getFullYear())
+  );
+  if (!yearsIndex) {
+    return createNewYear(user);
+  }
+  return yearsIndex;
 };
 
 const sortFunction = (a: User, b: User) => {
