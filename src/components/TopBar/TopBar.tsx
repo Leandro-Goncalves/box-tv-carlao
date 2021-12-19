@@ -9,7 +9,7 @@ interface TopBarProps {
 }
 
 export const TopBar: React.FC<TopBarProps> = ({ MonthRef, containerRef }) => {
-  const [showTopBar, setShowTopBar] = useState(true);
+  const [showTopBar, setShowTopBar] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
