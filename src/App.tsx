@@ -10,7 +10,6 @@ import {
   Typography,
   Box,
 } from "@material-ui/core";
-import useScrollPosition from "@react-hook/window-scroll";
 import { Add, Create, Delete } from "@material-ui/icons";
 import theme from "./theme/defaultTheme";
 import {
