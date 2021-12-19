@@ -10,6 +10,7 @@ import {
   Typography,
   Box,
 } from "@material-ui/core";
+import useScrollPosition from "@react-hook/window-scroll";
 import { Add, Create, Delete } from "@material-ui/icons";
 import theme from "./theme/defaultTheme";
 import {
@@ -28,6 +29,7 @@ import SearchBar from "./components/SearchBar";
 import useLongPress from "./hooks/useLongPress";
 import UserAddDayDialog from "./components/UserAddDayDialog";
 import { ArrowForward, ArrowBack } from "@material-ui/icons";
+import { TopBar } from "./components/TopBar/TopBar";
 
 const styles = {
   addUserButton: {
@@ -51,7 +53,7 @@ const monthsNull = [
   { value: "" },
 ];
 
-const months = [
+export const months = [
   "Jan",
   "Fev",
   "Mar",
@@ -103,7 +105,11 @@ const TableCellUser = styled(TableCell)<TableCellUserProps>`
 `;
 
 function App() {
-  const HeaderRef = useRef(null);
+  const containerRef = useRef<any>(null);
+  const NameRef = useRef<HTMLTableCellElement>(null);
+  const MonthRef = useRef<HTMLTableCellElement>(null);
+  const ActionsRef = useRef<HTMLTableCellElement>(null);
+
   const [users, setUsers] = useState<User[]>([]);
   const [openAddUserDialog, setOpenAddUserDialog] = useState(false);
   const [removeDialog, setRemoveDialog] = useState("");
@@ -197,6 +203,7 @@ function App() {
   };
   return (
     <>
+      <TopBar MonthRef={MonthRef} containerRef={containerRef} />
       {openUserAddDayDialog && (
         <UserAddDayDialog
           isOpen={openUserAddDayDialog}
@@ -262,17 +269,27 @@ function App() {
         </Button>
         <SearchBar value={searchBar} onSearch={(v) => setSearchBar(v)} />
       </Box>
-      <Table sx={{ minWidth: 650 }} ref={HeaderRef}>
+      <Table sx={{ minWidth: 650 }}>
         <TableHead>
           <TableRow>
-            <TableCell align="left">id</TableCell>
-            <TableCell align="center">Nome</TableCell>
-            {months.map((month) => (
-              <TableCell align="center" key={month}>
+            <TableCell align="left" style={{ width: 28 }} ref={containerRef}>
+              id
+            </TableCell>
+            <TableCell align="center" ref={NameRef}>
+              Nome
+            </TableCell>
+            {months.map((month, index) => (
+              <TableCell
+                align="center"
+                key={month}
+                ref={index === 0 ? MonthRef : undefined}
+              >
                 {month}
               </TableCell>
             ))}
-            <TableCell align="right">Ações</TableCell>
+            <TableCell align="right" ref={ActionsRef}>
+              Ações
+            </TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
