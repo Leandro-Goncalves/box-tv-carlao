@@ -10,6 +10,7 @@ interface TopBarProps {
 
 export const TopBar: React.FC<TopBarProps> = ({ MonthRef, containerRef }) => {
   const [showTopBar, setShowTopBar] = useState(false);
+  const [RefLeft, setRefLeft] = useState(0);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -24,6 +25,12 @@ export const TopBar: React.FC<TopBarProps> = ({ MonthRef, containerRef }) => {
 
     return () => window.removeEventListener("scroll", handleScroll);
   }, [showTopBar, containerRef]);
+
+  useEffect(() => {
+    setInterval(() => {
+      setRefLeft(MonthRef.current?.getBoundingClientRect().left);
+    }, 0);
+  }, []);
   return (
     <Box
       style={{
@@ -32,10 +39,12 @@ export const TopBar: React.FC<TopBarProps> = ({ MonthRef, containerRef }) => {
         right: 0,
         top: 0,
         zIndex: 10,
-        paddingLeft: MonthRef.current?.getBoundingClientRect().left,
+        paddingLeft: RefLeft,
         display: showTopBar ? "flex" : "none",
+        marginLeft: Math.sign(RefLeft) === -1 ? RefLeft : 0,
         backgroundColor: "#FFF",
         boxShadow: "0px 5px 4px rgba(0, 0, 0, 0.1)",
+        overflow: "hidden",
       }}
     >
       {months.map((month) => (
@@ -48,7 +57,7 @@ export const TopBar: React.FC<TopBarProps> = ({ MonthRef, containerRef }) => {
             fontSize: "0.875rem",
             lineHeight: "1.5rem",
             letterSpacing: "0.01071em",
-            padding: 16,
+            padding: 24.5,
             boxSizing: "border-box",
             borderBottom: "1px solid rgba(224, 224, 224, 1)",
             color: "rgba(0, 0, 0, 0.87)",

@@ -9,6 +9,7 @@ import {
   Button,
   Typography,
   Box,
+  Grid,
 } from "@material-ui/core";
 import { Add, Create, Delete } from "@material-ui/icons";
 import theme from "./theme/defaultTheme";
@@ -34,6 +35,7 @@ const styles = {
   addUserButton: {
     backgroundColor: theme.palette.green.main,
     margin: 24,
+    marginRight: 0,
   },
 };
 
@@ -76,6 +78,7 @@ const TableMonths = styled(Box)<TableCellMonthsProps>`
     isPaid ? theme.palette.green.main : theme.palette.error.main};
   cursor: pointer;
   height: 63px;
+  width: 63px;
   border-radius: 5px;
   display: flex;
   justify-content: center;
@@ -201,7 +204,7 @@ function App() {
     localStorage.setItem("currentYear", value.toString());
   };
   return (
-    <>
+    <Box style={{ width: "100%" }}>
       <TopBar MonthRef={MonthRef} containerRef={containerRef} />
       {openUserAddDayDialog && (
         <UserAddDayDialog
@@ -257,101 +260,102 @@ function App() {
           <ArrowForward />
         </IconButton>
       </Box>
-      <Box style={{ display: "flex", gap: 8, alignItems: "center" }}>
-        <Button
-          onClick={handleOpenAddUserDialog}
-          variant="contained"
-          startIcon={<Add />}
-          style={styles.addUserButton}
-        >
-          adicionar usuario
-        </Button>
-        <SearchBar value={searchBar} onSearch={(v) => setSearchBar(v)} />
-      </Box>
-      <Table sx={{ minWidth: 650 }}>
-        <TableHead>
-          <TableRow>
-            <TableCell align="left" style={{ width: 28 }} ref={containerRef}>
-              id
-            </TableCell>
-            <TableCell align="center" ref={NameRef}>
-              Nome
-            </TableCell>
-            {months.map((month, index) => (
-              <TableCell
-                align="center"
-                key={month}
-                ref={index === 0 ? MonthRef : undefined}
-              >
-                {month}
-              </TableCell>
-            ))}
-            <TableCell align="right" ref={ActionsRef}>
-              Ações
-            </TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {users.filter(filterFunction).map((user, index) => (
+      <Grid container style={{ display: "flex", gap: 8, alignItems: "center" }}>
+        <Grid item>
+          <Button
+            onClick={handleOpenAddUserDialog}
+            variant="contained"
+            startIcon={<Add />}
+            style={styles.addUserButton}
+          >
+            adicionar usuario
+          </Button>
+        </Grid>
+        <Grid item>
+          <SearchBar value={searchBar} onSearch={(v) => setSearchBar(v)} />
+        </Grid>
+      </Grid>
+
+      <Box style={{ overflow: "scroll", width: "100%" }}>
+        <Table sx={{ minWidth: 900 }}>
+          <TableHead>
             <TableRow>
-              <TableCell align="left" style={{ maxWidth: 30 }}>
-                {index + 1}
+              <TableCell align="left" style={{ width: 28 }} ref={containerRef}>
+                id
               </TableCell>
-              <TableCellUser
-                isRented={user.isRented}
-                align="center"
-                onClick={() => setOpenUserInformation(user)}
-              >
-                {user.name}
-              </TableCellUser>
-              {(currentYearIndex(user).months ?? monthsNull).map(
-                (month, index) => (
-                  <TableCell style={{ padding: 5 }}>
-                    <TableMonths
-                      isPaid={!!month.value}
-                      key={index}
-                      onClick={() => ToggleDay(user.id ?? "", user, index)}
-                      {...longPressEvent}
-                      onMouseDown={(e: any) =>
-                        longPressEvent.onMouseDown(e, { user, index })
-                      }
-                      onTouchStart={(e: any) =>
-                        longPressEvent.onTouchStart(e, { user, index })
-                      }
-                    >
-                      <Typography
-                        style={{
-                          fontSize: 20,
-                          textAlign: "center",
-                          fontWeight: 600,
-                          color: "#FFF",
-                        }}
-                      >
-                        {month.value}
-                      </Typography>
-                    </TableMonths>
-                  </TableCell>
-                )
-              )}
-              <TableCell
-                align="right"
-                style={{
-                  paddingRight: 8,
-                  width: 80,
-                }}
-              >
-                <IconButton onClick={() => handleEdit(user)}>
-                  <Create />
-                </IconButton>
-                <IconButton onClick={() => setRemoveDialog(user.id ?? "")}>
-                  <Delete />
-                </IconButton>
+              <TableCell align="center" ref={NameRef}>
+                Nome
+              </TableCell>
+              {months.map((month, index) => (
+                <TableCell
+                  align="center"
+                  key={month}
+                  style={{ width: 100 }}
+                  ref={index === 0 ? MonthRef : undefined}
+                >
+                  {month}
+                </TableCell>
+              ))}
+              <TableCell align="right" ref={ActionsRef}>
+                Ações
               </TableCell>
             </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </>
+          </TableHead>
+          <TableBody>
+            {users.filter(filterFunction).map((user, index) => (
+              <TableRow>
+                <TableCell align="left" style={{ maxWidth: 30 }}>
+                  {index + 1}
+                </TableCell>
+                <TableCellUser
+                  isRented={user.isRented}
+                  align="center"
+                  onClick={() => setOpenUserInformation(user)}
+                >
+                  {user.name}
+                </TableCellUser>
+                {(currentYearIndex(user).months ?? monthsNull).map(
+                  (month, index) => (
+                    <TableCell style={{ padding: 5 }}>
+                      <TableMonths
+                        isPaid={!!month.value}
+                        key={index}
+                        onClick={() => ToggleDay(user.id ?? "", user, index)}
+                      >
+                        <Typography
+                          style={{
+                            fontSize: 20,
+                            textAlign: "center",
+                            fontWeight: 600,
+                            color: "#FFF",
+                          }}
+                        >
+                          {month.value}
+                        </Typography>
+                      </TableMonths>
+                    </TableCell>
+                  )
+                )}
+                <TableCell
+                  align="right"
+                  style={{
+                    paddingRight: 8,
+                    width: 80,
+                  }}
+                >
+                  <IconButton onClick={() => handleEdit(user)}>
+                    <Create />
+                  </IconButton>
+                  <IconButton onClick={() => setRemoveDialog(user.id ?? "")}>
+                    <Delete />
+                  </IconButton>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </Box>
+    </Box>
   );
 }
 

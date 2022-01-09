@@ -81,7 +81,7 @@ const UserService = {
         id: doc.id,
         ...doc.data(),
       })) as User[];
-      callback(users.sort(sortFunction));
+      callback(users.sort(sortFunction).slice(0, 20));
     });
   },
   async addUser(user: User) {

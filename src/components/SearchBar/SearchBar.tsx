@@ -29,7 +29,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch, value }) => {
       value={localValue}
       onChange={(v) => setLocalValue(v.target.value)}
       fullWidth
-      style={{ maxWidth: 400 }}
+      style={{ maxWidth: 400, marginLeft: 24 }}
       InputProps={{
         endAdornment: (
           <Grow in={!!value}>
