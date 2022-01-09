@@ -30,7 +30,7 @@ export const TopBar: React.FC<TopBarProps> = ({ MonthRef, containerRef }) => {
     setInterval(() => {
       setRefLeft(MonthRef.current?.getBoundingClientRect().left);
     }, 0);
-  }, []);
+  }, [MonthRef]);
   return (
     <Box
       style={{

@@ -26,7 +26,7 @@ import NotYesDialog from "./components/NotYesDialog";
 import { toast } from "react-toastify";
 import UserInformationDialog from "./components/UserInformationDialog";
 import SearchBar from "./components/SearchBar";
-import useLongPress from "./hooks/useLongPress";
+// import useLongPress from "./hooks/useLongPress";
 import UserAddDayDialog from "./components/UserAddDayDialog";
 import { ArrowForward, ArrowBack } from "@material-ui/icons";
 import { TopBar } from "./components/TopBar/TopBar";
@@ -119,8 +119,8 @@ function App() {
   const [currentYear, setCurrentYear] = useState(
     Number(localStorage.getItem("currentYear")) || new Date().getFullYear()
   );
-  const [openUserAddDayDialogValue, setOpenUserAddDayDialogValue] =
-    useState<any>();
+  // const [openUserAddDayDialogValue, setOpenUserAddDayDialogValue] =
+  //   useState<any>();
 
   const [initialData, setInitialData] = useState<User>({} as User);
 
@@ -180,24 +180,24 @@ function App() {
     });
   }, []);
 
-  const onLongPress = (e: any, value: any) => {
-    setOpenUserAddDayDialogValue(value);
-    setOpenUserAddDayDialog(true);
-  };
+  // const onLongPress = (e: any, value: any) => {
+  //   setOpenUserAddDayDialogValue(value);
+  //   setOpenUserAddDayDialog(true);
+  // };
 
-  const onClick = () => {};
+  // const onClick = () => {};
 
-  const defaultOptions = {
-    shouldPreventDefault: true,
-    delay: 500,
-  };
+  // const defaultOptions = {
+  //   shouldPreventDefault: true,
+  //   delay: 500,
+  // };
 
-  const longPressEvent = useLongPress({
-    onLongPress,
-    onClick,
-    shouldPreventDefault: defaultOptions.shouldPreventDefault,
-    delay: defaultOptions.delay,
-  });
+  // const longPressEvent = useLongPress({
+  //   onLongPress,
+  //   onClick,
+  //   shouldPreventDefault: defaultOptions.shouldPreventDefault,
+  //   delay: defaultOptions.delay,
+  // });
 
   const handleCurrentYear = (value: number) => {
     setCurrentYear(value);
@@ -210,7 +210,7 @@ function App() {
         <UserAddDayDialog
           isOpen={openUserAddDayDialog}
           onClose={() => setOpenUserAddDayDialog(false)}
-          value={openUserAddDayDialogValue}
+          value={false}
         />
       )}
 
