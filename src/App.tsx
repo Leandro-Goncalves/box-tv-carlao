@@ -181,7 +181,7 @@ function App() {
 
   useEffect(() => {
     setUsers(usersDb.filter(filterFunction));
-  }, [searchBar, usersDb]);
+  }, [searchBar, usersDb]); // eslint-disable-line
 
   useEffect(() => {
     getUsers((userDb) => {
