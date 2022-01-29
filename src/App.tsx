@@ -10,6 +10,7 @@ import {
   Typography,
   Box,
   Grid,
+  Pagination,
 } from "@material-ui/core";
 import { Add, Create, Delete } from "@material-ui/icons";
 import theme from "./theme/defaultTheme";
@@ -112,7 +113,11 @@ function App() {
   const MonthRef = useRef<HTMLTableCellElement>(null);
   const ActionsRef = useRef<HTMLTableCellElement>(null);
 
+  const [page, setPage] = useState(1);
+  const rowsPerPage = 50;
+
   const [users, setUsers] = useState<User[]>([]);
+  const [usersDb, setUsersDb] = useState<User[]>([]);
   const [openAddUserDialog, setOpenAddUserDialog] = useState(false);
   const [removeDialog, setRemoveDialog] = useState("");
   const [openUserAddDayDialog, setOpenUserAddDayDialog] = useState(false);
@@ -175,8 +180,12 @@ function App() {
   };
 
   useEffect(() => {
+    setUsers(usersDb.filter(filterFunction));
+  }, [searchBar, usersDb]);
+
+  useEffect(() => {
     getUsers((userDb) => {
-      setUsers(userDb);
+      setUsersDb(userDb);
     });
   }, []);
 
@@ -302,59 +311,79 @@ function App() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {users.filter(filterFunction).map((user, index) => (
-              <TableRow>
-                <TableCell align="left" style={{ maxWidth: 30 }}>
-                  {index + 1}
-                </TableCell>
-                <TableCellUser
-                  isRented={user.isRented}
-                  align="center"
-                  onClick={() => setOpenUserInformation(user)}
-                >
-                  {user.name}
-                </TableCellUser>
-                {(currentYearIndex(user).months ?? monthsNull).map(
-                  (month, index) => (
-                    <TableCell style={{ padding: 5 }}>
-                      <TableMonths
-                        isPaid={!!month.value}
-                        key={index}
-                        onClick={() => ToggleDay(user.id ?? "", user, index)}
-                      >
-                        <Typography
-                          style={{
-                            fontSize: 20,
-                            textAlign: "center",
-                            fontWeight: 600,
-                            color: "#FFF",
-                          }}
+            {users
+              .slice(
+                0 + rowsPerPage * (page - 1),
+                rowsPerPage + rowsPerPage * (page - 1)
+              )
+              .map((user, index) => (
+                <TableRow>
+                  <TableCell align="left" style={{ maxWidth: 30 }}>
+                    {index + 1 + rowsPerPage * (page - 1)}
+                  </TableCell>
+                  <TableCellUser
+                    isRented={user.isRented}
+                    align="center"
+                    onClick={() => setOpenUserInformation(user)}
+                  >
+                    {user.name}
+                  </TableCellUser>
+                  {(currentYearIndex(user).months ?? monthsNull).map(
+                    (month, index) => (
+                      <TableCell style={{ padding: 5 }}>
+                        <TableMonths
+                          isPaid={!!month.value}
+                          key={index}
+                          onClick={() => ToggleDay(user.id ?? "", user, index)}
                         >
-                          {month.value}
-                        </Typography>
-                      </TableMonths>
-                    </TableCell>
-                  )
-                )}
-                <TableCell
-                  align="right"
-                  style={{
-                    paddingRight: 8,
-                    width: 80,
-                  }}
-                >
-                  <IconButton onClick={() => handleEdit(user)}>
-                    <Create />
-                  </IconButton>
-                  <IconButton onClick={() => setRemoveDialog(user.id ?? "")}>
-                    <Delete />
-                  </IconButton>
-                </TableCell>
-              </TableRow>
-            ))}
+                          <Typography
+                            style={{
+                              fontSize: 20,
+                              textAlign: "center",
+                              fontWeight: 600,
+                              color: "#FFF",
+                            }}
+                          >
+                            {month.value}
+                          </Typography>
+                        </TableMonths>
+                      </TableCell>
+                    )
+                  )}
+                  <TableCell
+                    align="right"
+                    style={{
+                      paddingRight: 8,
+                      width: 80,
+                    }}
+                  >
+                    <IconButton onClick={() => handleEdit(user)}>
+                      <Create />
+                    </IconButton>
+                    <IconButton onClick={() => setRemoveDialog(user.id ?? "")}>
+                      <Delete />
+                    </IconButton>
+                  </TableCell>
+                </TableRow>
+              ))}
           </TableBody>
         </Table>
       </Box>
+      {users.length > rowsPerPage && (
+        <Box
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            padding: "16px 0",
+          }}
+        >
+          <Pagination
+            count={Math.ceil(users.length / rowsPerPage)}
+            page={page}
+            onChange={(_, v) => setPage(v)}
+          />
+        </Box>
+      )}
     </Box>
   );
 }
