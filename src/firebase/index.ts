@@ -2,12 +2,12 @@ import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
 
 const config = {
-  apiKey: "AIzaSyD88sHDk-SB8kHxXEK1Gdxz317OyHMy7PE",
-  authDomain: "box-tv-348e2.firebaseapp.com",
-  projectId: "box-tv-348e2",
-  storageBucket: "box-tv-348e2.appspot.com",
-  messagingSenderId: "1030187959468",
-  appId: "1:1030187959468:web:f39af55e9101da15e84b09",
+  apiKey: "AIzaSyBC2zNXUOt78CsUSsqqltTYXR1fLrM_OVc",
+  authDomain: "box-tv-carlao.firebaseapp.com",
+  projectId: "box-tv-carlao",
+  storageBucket: "box-tv-carlao.appspot.com",
+  messagingSenderId: "814431322509",
+  appId: "1:814431322509:web:e9d1c60e7438bc0b17bdc4",
 };
 
 const app = initializeApp(config);
